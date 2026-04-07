@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    mapper:
+#     대소문자 상관없게 해주는 옵션
+      accept-case-insensitive-enums: true
   datasource:
     url: ${DB_URL}
     driver-class-name: org.mariadb.jdbc.Driver
