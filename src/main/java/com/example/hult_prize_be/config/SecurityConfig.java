@@ -1,9 +1,9 @@
 package com.example.hult_prize_be.config;
 
+import com.example.hult_prize_be.config.filter.JwtAuthFilter;
+import com.example.hult_prize_be.config.filter.LoginFilter;
+import com.example.hult_prize_be.config.oauth.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
-import org.example.coding_convention.config.filter.JwtAuthFilter;
-import org.example.coding_convention.config.filter.LoginFilter;
-import org.example.coding_convention.config.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

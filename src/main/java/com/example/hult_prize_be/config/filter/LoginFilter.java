@@ -1,5 +1,6 @@
 package com.example.hult_prize_be.config.filter;
 
+import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -9,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.coding_convention.user.model.UserDto;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,9 +31,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         try {
             log.debug("LoginFilter 실행됐다.");
 
-            UserDto.Login dto = new ObjectMapper().readValue(request.getInputStream(), UserDto.Login.class);
+            MemberDto.Login dto = new ObjectMapper().readValue(request.getInputStream(), MemberDto.Login.class);
             authToken = new UsernamePasswordAuthenticationToken(
-                    dto.getEmail(), dto.getPassword()
+                    dto.getMember_id(), dto.getPassword()
             );
 
         } catch (IOException e) {
@@ -49,9 +49,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("LoginFilter 성공 로직.");
-        UserDto.AuthUser authUser = (UserDto.AuthUser) authResult.getPrincipal();
+        MemberDto.AuthUser authUser = (MemberDto.AuthUser) authResult.getPrincipal();
 
-        String jwt = JwtUtil.generateToken(authUser.getEmail(), authUser.getIdx(), authUser.getNickname());
+        String jwt = JwtUtil.generateToken(authUser.getName(), authUser.getId(), authUser.getName());
 
         if(jwt != null) {
             Cookie cookie = new Cookie("SJB_AT", jwt);
@@ -66,7 +66,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             );
             response.addHeader("Set-Cookie", cookieString);
 
-            response.getWriter().write(new ObjectMapper().writeValueAsString(UserDto.LoginRes.from(authUser)));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(MemberDto.LoginRes.from(authUser)));
 
         }
 

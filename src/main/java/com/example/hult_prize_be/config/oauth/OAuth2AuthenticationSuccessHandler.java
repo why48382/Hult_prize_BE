@@ -1,12 +1,12 @@
 package com.example.hult_prize_be.config.oauth;
 
 
+import com.example.hult_prize_be.member.model.dto.MemberDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.coding_convention.user.model.UserDto;
 import com.example.hult_prize_be.utils.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -21,9 +21,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("LoginFilter 성공 로직.");
-        UserDto.AuthUser authUser = (UserDto.AuthUser) authentication.getPrincipal();
+        MemberDto.AuthUser authUser = (MemberDto.AuthUser) authentication.getPrincipal();
 
-        String jwt = JwtUtil.generateToken(authUser.getEmail(), authUser.getIdx(), authUser.getNickname());
+        String jwt = JwtUtil.generateToken(authUser.getMember_id(), authUser.getId(), authUser.getName());
 
         if (jwt != null) {
             String cookieValue = String.format(

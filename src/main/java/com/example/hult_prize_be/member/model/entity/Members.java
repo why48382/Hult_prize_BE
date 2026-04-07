@@ -22,6 +22,9 @@ public class Members {
     @Column(nullable = false, unique = true)
     private String member_id;
 
+    @Column(length = 100)
+    private String password;
+
     @Column(nullable = false)
     private String name;
 

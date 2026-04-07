@@ -1,5 +1,6 @@
 package com.example.hult_prize_be.config.filter;
 
+import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -7,7 +8,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.coding_convention.user.model.UserDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,17 +63,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.getClaims(jwt);
             System.out.println(8);
             if (claims != null) {
-                String email = JwtUtil.getValue(claims, "email");
+                String member_id = JwtUtil.getValue(claims, "member_id");
                 System.out.println(9);
-                Integer idx = Integer.parseInt(JwtUtil.getValue(claims, "idx"));
+                Long id = Long.valueOf(JwtUtil.getValue(claims, "id"));
                 System.out.println(10);
-                String nickname = JwtUtil.getValue(claims, "nickname");
+                String name = JwtUtil.getValue(claims, "name");
                 System.out.println(11);
 
-                UserDto.AuthUser authUser = UserDto.AuthUser.builder()
-                        .idx(idx)
-                        .email(email)
-                        .nickname(nickname)
+                MemberDto.AuthUser authUser = MemberDto.AuthUser.builder()
+                        .id(id)
+                        .member_id(member_id)
+                        .name(name)
                         .build();
                 System.out.println(12);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(

@@ -4,3 +4,6 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}

@@ -1,7 +1,20 @@
 package com.example.hult_prize_be.member.model.dto;
 
 import com.example.hult_prize_be.member.model.entity.Members;
+import jakarta.persistence.Column;
+import lombok.Builder;
 import lombok.Getter;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class MemberDto {
 
@@ -18,6 +31,79 @@ public class MemberDto {
         }
     }
 
+    @Getter
+    @Builder
+    public static class AuthUser implements UserDetails, OAuth2User {
+        private Long id;
+        private String member_id;
+        private String password;
+        private String name;
+        private Members.Role role;
+        private Members.Status status;
 
+        @Override
+        public String getName() {
+            return (name != null && !name.isBlank()) ? name : member_id;
+        }
+
+        public boolean isEnabled() {
+            return status == Members.Status.ACTIVE;
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return Map.of();
+        }
+
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+        @Override
+        public String getPassword() {
+            return password;
+        }
+
+        @Override
+        public String getUsername() {
+            return name;
+        }
+
+        public static AuthUser fromOAuth(Members entity) {
+            return AuthUser.builder()
+                    .member_id(entity.getMember_id())
+                    .name(entity.getName())
+                    .role(entity.getRole())
+                    .status(entity.getStatus())
+                    .password(null)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class Login {
+        private String member_id;
+        private String password;
+    }
+
+    @Getter
+    @Builder
+    public static class LoginRes {
+        private Long id;
+        private String member_id;
+        private String name;
+
+        public static LoginRes from(AuthUser authUser) {
+            LoginRes dto = LoginRes.builder()
+                    .id(authUser.getId())
+                    .member_id(authUser.getMember_id())
+                    .name(authUser.getName())
+                    .build();
+
+            return dto;
+        }
+    }
 
 }
