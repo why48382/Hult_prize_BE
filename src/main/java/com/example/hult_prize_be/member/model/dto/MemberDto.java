@@ -20,12 +20,12 @@ public class MemberDto {
 
     @Getter
     public static class MemberCreateDto {
-        private String member_id;
+        private String memberId;
         private String name;
 
         public Members toMembers() {
             return Members.builder()
-                    .member_id(member_id)
+                    .memberId(memberId)
                     .name(name)
                     .build();
         }
@@ -35,7 +35,7 @@ public class MemberDto {
     @Builder
     public static class AuthUser implements UserDetails, OAuth2User {
         private Long id;
-        private String member_id;
+        private String memberId;
         private String password;
         private String name;
         private Members.Role role;
@@ -43,7 +43,7 @@ public class MemberDto {
 
         @Override
         public String getName() {
-            return (name != null && !name.isBlank()) ? name : member_id;
+            return (name != null && !name.isBlank()) ? name : memberId;
         }
 
         public boolean isEnabled() {
@@ -72,7 +72,7 @@ public class MemberDto {
 
         public static AuthUser fromOAuth(Members entity) {
             return AuthUser.builder()
-                    .member_id(entity.getMember_id())
+                    .memberId(entity.getMemberId())
                     .name(entity.getName())
                     .role(entity.getRole())
                     .status(entity.getStatus())
@@ -84,7 +84,7 @@ public class MemberDto {
     @Getter
     @Builder
     public static class Login {
-        private String member_id;
+        private String memberId;
         private String password;
     }
 
@@ -92,13 +92,13 @@ public class MemberDto {
     @Builder
     public static class LoginRes {
         private Long id;
-        private String member_id;
+        private String memberId;
         private String name;
 
         public static LoginRes from(AuthUser authUser) {
             LoginRes dto = LoginRes.builder()
                     .id(authUser.getId())
-                    .member_id(authUser.getMember_id())
+                    .memberId(authUser.getMemberId())
                     .name(authUser.getName())
                     .build();
 

@@ -30,11 +30,11 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String kakaoId = attributes.get("id").toString();
 
         Optional<Members> socialUserResult =
-                memberRepository.findByMember_id(kakaoId);
+                memberRepository.findByMemberId(kakaoId);
         Members member;
         if (!socialUserResult.isPresent()) {
             member = memberRepository.save(
-                    Members.builder().name(name).member_id(kakaoId).password("KAKAO_USER")
+                    Members.builder().name(name).memberId(kakaoId).password("KAKAO_USER")
                             .build()
             );
         } else {

@@ -20,7 +20,7 @@ public class Members {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String member_id;
+    private String memberId;
 
     @Column(length = 100)
     private String password;

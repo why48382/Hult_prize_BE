@@ -21,6 +21,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+    private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
     // 원래는 form-data 형식으로 사용자 정보를 입력받았는데
@@ -33,7 +34,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             MemberDto.Login dto = new ObjectMapper().readValue(request.getInputStream(), MemberDto.Login.class);
             authToken = new UsernamePasswordAuthenticationToken(
-                    dto.getMember_id(), dto.getPassword()
+                    dto.getMemberId(), dto.getPassword()
             );
 
         } catch (IOException e) {
@@ -51,20 +52,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("LoginFilter 성공 로직.");
         MemberDto.AuthUser authUser = (MemberDto.AuthUser) authResult.getPrincipal();
 
-        String jwt = JwtUtil.generateToken(authUser.getName(), authUser.getId(), authUser.getName());
+        String jwt = jwtUtil.generateToken(authUser.getName(), authUser.getId(), authUser.getName());
 
         if(jwt != null) {
-            Cookie cookie = new Cookie("SJB_AT", jwt);
+            Cookie cookie = new Cookie("onsoom_access_token", jwt);
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
             cookie.setPath("/");
-            cookie.setDomain("gomorebi.kro.kr");
+//            cookie.setDomain("gomorebi.kro.kr");
 
-            String cookieString = String.format(
-                    "%s=%s; Path=/; Domain=gomorebi.kro.kr; HttpOnly; Secure; SameSite=None",
-                    cookie.getName(), cookie.getValue()
-            );
-            response.addHeader("Set-Cookie", cookieString);
+//            String cookieString = String.format(
+//                    "%s=%s; Path=/; Domain=gomorebi.kro.kr; HttpOnly; Secure; SameSite=None",
+//                    cookie.getName(), cookie.getValue()
+//            );
+//            response.addHeader("Set-Cookie", cookieString);
 
             response.getWriter().write(new ObjectMapper().writeValueAsString(MemberDto.LoginRes.from(authUser)));
 

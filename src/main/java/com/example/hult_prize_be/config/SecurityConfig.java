@@ -3,6 +3,7 @@ package com.example.hult_prize_be.config;
 import com.example.hult_prize_be.config.filter.JwtAuthFilter;
 import com.example.hult_prize_be.config.filter.LoginFilter;
 import com.example.hult_prize_be.config.oauth.OAuth2AuthenticationSuccessHandler;
+import com.example.hult_prize_be.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,9 @@ import java.util.List;
 @EnableWebSecurity
 @EnableJpaAuditing
 public class SecurityConfig {
-    private final AuthenticationConfiguration configuration;
+
+    private final JwtUtil jwtUtil;
+    private final AuthenticationConfiguration authConfiguration;
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
@@ -38,18 +41,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authConfiguration.getAuthenticationManager();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        //configuration.setAllowedOrigins(List.of("http://localhost:5175") => 불편해서 전체경로 허용(개별용)
         configuration.setAllowedOrigins(
-                List.of("https://www.gomorebi.kro.kr", "http://localhost:5173", "http://192.0.2.108:80")
+                List.of("http://localhost:5173", "http://192.0.2.108:80")
         );
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -61,55 +62,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        LoginFilter loginFilter = new LoginFilter(configuration.getAuthenticationManager());
-        loginFilter.setFilterProcessesUrl("/api/login"); // JWT 로그인 전용 URL
+        LoginFilter loginFilter = new LoginFilter(jwtUtil, authConfiguration.getAuthenticationManager());
+        loginFilter.setFilterProcessesUrl("/api/login");
 
         http.oauth2Login(config -> {
-                    config.userInfoEndpoint(
-                            endpoint ->
-                                    endpoint.userService(oAuth2UserService)
-                    );
-                    config.successHandler(oAuth2AuthenticationSuccessHandler);
-                }
+            config.userInfoEndpoint(
+                    endpoint -> endpoint.userService(oAuth2UserService)
+            );
+            config.successHandler(oAuth2AuthenticationSuccessHandler);
+        });
+
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
+                ).permitAll()
+                .requestMatchers(
+                        "/login", "/auth/**", "/user/signup",
+                        "/oauth2/**", "/login/oauth2/**", "/user/verify"
+                ).permitAll()
+                .requestMatchers("/project/read", "/project/search", "/file/read/**").permitAll()
+                .requestMatchers("/test/*").hasRole("USER")
+                .anyRequest().authenticated()  // permitAll → authenticated로 변경
         );
 
-        http.authorizeHttpRequests(
-                (auth) -> auth
-                        // Swagger 관련 리소스는 항상 허용
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
-
-                        // 로그인/회원가입/소셜 로그인은 허용
-                        .requestMatchers("/login", "/auth/**", "/user/signup", "/oauth2/**", "/login/oauth2/**","/user/verify").permitAll()
-
-                        // 프로젝트 검색과 상세조회는 허용
-                        .requestMatchers("/project/read", "/project/search", "/file/read/**").permitAll()
-
-                        // 테스트 API → USER 권한 필요
-                        .requestMatchers("/test/*").hasRole("USER")
-                        // 이메일 인증
-                        .requestMatchers("/user/verify").permitAll()
-
-                        // 나머지 모든 요청은 인증 필요
-                        .anyRequest().permitAll()
-        );
-
-        http.cors(cors ->
-                cors.configurationSource(corsConfigurationSource()));
-
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.csrf(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(new LoginFilter(configuration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        // jwtUtil 넘겨주기
+        http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
-
