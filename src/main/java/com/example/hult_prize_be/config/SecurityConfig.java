@@ -3,6 +3,7 @@ package com.example.hult_prize_be.config;
 import com.example.hult_prize_be.config.filter.JwtAuthFilter;
 import com.example.hult_prize_be.config.filter.LoginFilter;
 import com.example.hult_prize_be.config.oauth.OAuth2AuthenticationSuccessHandler;
+import com.example.hult_prize_be.member.service.OAuth2UserService;
 import com.example.hult_prize_be.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
