@@ -43,4 +43,8 @@ public class Members {
         ACTIVE,
         BLOCKED
     }
+
+    public void decideRole(Role role) {
+        if (role != null) this.role = role;
+    }
 }

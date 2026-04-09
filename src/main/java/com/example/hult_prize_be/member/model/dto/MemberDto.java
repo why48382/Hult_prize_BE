@@ -106,4 +106,20 @@ public class MemberDto {
         }
     }
 
+    @Getter
+    @Builder
+    public static class RoleReq {
+        private String memberId;
+        private String name;
+        private Members.Role role;
+
+        public static RoleReq from(RoleReq entity) {
+            return RoleReq.builder()
+                    .memberId(entity.getMemberId())
+                    .name(entity.getName())
+                    .role(entity.getRole())
+                    .build();
+        }
+    }
+
 }
