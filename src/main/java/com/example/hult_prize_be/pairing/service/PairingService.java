@@ -17,11 +17,12 @@ public class PairingService {
     private final PairingRepository pairingRepository;
     private final MemberRepository memberRepository;
 
-    private record CodeEntry(String code, Instant expiresAt) { }
+    private record CodeEntry(String elderId, Instant expiresAt) { }
     private final ConcurrentHashMap<String, CodeEntry> codeStore = new ConcurrentHashMap<>();
+    // 코드(key) 아이디와 만료시간 (값) 으로 구성됨
 
     public String codeIssued(MemberDto.AuthUser dto) {
-        Members member = memberRepository.findByMemberIdAndName(dto.getMemberId(), dto.getName())
+        Members member = memberRepository.findByMemberId(dto.getMemberId())
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
 
         if (member.getRole() != Members.Role.ELDER) {
@@ -29,9 +30,20 @@ public class PairingService {
         }
 
         String code = String.format("%04d", new Random().nextInt(10000));
-        codeStore.put(member.getMemberId(), new CodeEntry(code, Instant.now().plusSeconds(600)));
+        codeStore.put(code, new CodeEntry(member.getMemberId(), Instant.now().plusSeconds(600)));
 
         return code;
+    }
+
+    public void codeVerify(MemberDto.AuthUser member, String inputCode) {
+        Members entity = memberRepository.findByMemberId(member.getMemberId()).orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
+        CodeEntry entry = codeStore.get(inputCode);
+        if (entry == null || Instant.now().isAfter(entry.expiresAt())) {
+            codeStore.remove(inputCode);
+        }
+        // 여기까지 오면 검증 완료인것
+        // 이제 테이블에 저장하면 됨
+        // 그럼 jpa 부터 짜야지
     }
 
 }

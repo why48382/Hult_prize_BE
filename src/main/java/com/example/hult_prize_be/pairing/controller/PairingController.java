@@ -19,12 +19,14 @@ public class PairingController {
 
     // 부모님의 페어링 코드 발급 요청 (트리거를 만들고 나중에 프론트에서 버튼을 통해 가능학 ㅔ만들자 DB에 Pairing KEY 저장은 필요 없다고 생각하고 있기 때문에
     @GetMapping("/")
-    public ResponseEntity codeIssued(@AuthenticationPrincipal MemberDto.AuthUser dto) {
-        pairingService.codeIssued(dto);
+    public ResponseEntity<String> codeIssued(@AuthenticationPrincipal MemberDto.AuthUser member) {
+        return ResponseEntity.ok(pairingService.codeIssued(member));
     }
     // 보호자의 페어링 코드 검증 요청
+    // 대상의 id를 어떻게 휙득하지? 반대로 이렇게 해야 할듯 코드 입력 -> 아이디를 알아내기
     @GetMapping("/")
-    public ResponseEntity codeVerification() {
-        pairingService
+    public ResponseEntity codeVerification(@AuthenticationPrincipal MemberDto.AuthUser member, String code) {
+        pairingService.codeVerify(member, code);
+        return ResponseEntity.ok().build();
     }
 }

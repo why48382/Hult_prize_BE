@@ -20,7 +20,7 @@ public class MemberController {
     @GetMapping("/")
     public ResponseEntity decideRole(@AuthenticationPrincipal MemberDto.AuthUser member,
                              @RequestBody MemberDto.RoleReq dto) {
-        memberService.decideRole(member.getMemberId(), member.getName(), dto.getRole());
+        memberService.decideRole(member.getMemberId(), dto.getRole());
         return ResponseEntity.ok().build();
     }
 }
