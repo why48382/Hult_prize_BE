@@ -50,6 +50,7 @@ public class PairingService {
         // 여기까지 오면 검증 완료인것
         // 이제 테이블에 저장하면 됨
         // 그럼 jpa 부터 짜야지
+        // TODO 이제 페어링 테이블 저장 로직만 만들면 됨
     }
 
 }
