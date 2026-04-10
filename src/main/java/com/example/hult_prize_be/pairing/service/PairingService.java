@@ -23,7 +23,7 @@ public class PairingService {
     private final ConcurrentHashMap<String, CodeEntry> codeStore = new ConcurrentHashMap<>();
     // 코드(key) 아이디와 만료시간 (값) 으로 구성됨
 
-    public String codeIssued(MemberDto.AuthUser dto) {
+    public String codeIssue(MemberDto.AuthUser dto) {
         Members member = memberRepository.findByMemberId(dto.getMemberId())
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
 
