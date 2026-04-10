@@ -17,7 +17,9 @@ public class PairingService {
     private final PairingRepository pairingRepository;
     private final MemberRepository memberRepository;
 
-    private record CodeEntry(String elderId, Instant expiresAt) { }
+    private record CodeEntry(String elderId, Instant expiresAt) {
+    }
+
     private final ConcurrentHashMap<String, CodeEntry> codeStore = new ConcurrentHashMap<>();
     // 코드(key) 아이디와 만료시간 (값) 으로 구성됨
 
@@ -29,7 +31,11 @@ public class PairingService {
             throw new RuntimeException("잘못된 역할입니다.");
         }
 
-        String code = String.format("%04d", new Random().nextInt(10000));
+        // 코드 생성을 메소드로 빼고 불러오는 방식으로 변경하기
+        String code;
+        do {
+            code = String.format("%04d", new Random().nextInt(10000));
+        } while (codeStore.containsKey(code)); // 이미 존재하면 다시 생성
         codeStore.put(code, new CodeEntry(member.getMemberId(), Instant.now().plusSeconds(600)));
 
         return code;
