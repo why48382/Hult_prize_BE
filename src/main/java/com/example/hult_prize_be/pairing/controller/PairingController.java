@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,7 +26,7 @@ public class PairingController {
     // 보호자의 페어링 코드 검증 요청
     // 대상의 id를 어떻게 휙득하지? 반대로 이렇게 해야 할듯 코드 입력 -> 아이디를 알아내기
     @GetMapping("/codeverify")
-    public ResponseEntity codeVerification(@AuthenticationPrincipal MemberDto.AuthUser member, String code) {
+    public ResponseEntity codeVerification(@AuthenticationPrincipal MemberDto.AuthUser member, @RequestParam String code) {
         pairingService.codeVerify(member, code);
         return ResponseEntity.ok().build();
     }

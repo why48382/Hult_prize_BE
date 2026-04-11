@@ -50,8 +50,6 @@ public class PairingService {
             codeStore.remove(inputCode);
             throw new RuntimeException("만료되거나 잘못된 코드입니다.");
         }
-        // TODO 이제 페어링 테이블 저장 로직만 만들면 됨
-        // 엔티티에 담기
         PairingDto.CreatReq creatReq = new PairingDto.CreatReq();
         Pairing pairing = creatReq.toEntity(entry.elderId, caregiver);
         pairingRepository.save(pairing);
