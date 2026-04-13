@@ -18,10 +18,7 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<FileUploadResult> upload(
-            @RequestPart("file") MultipartFile file,
-            @RequestParam(defaultValue = "test") String directory
-    ) {
+    public ResponseEntity<FileUploadResult> upload(@RequestPart("file") MultipartFile file, @RequestParam(defaultValue = "test") String directory) {
         return ResponseEntity.ok(fileService.upload(file, directory));
     }
 }
