@@ -38,5 +38,16 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  cloud:
+    gcp:
+      project-id: ${GCP_PROJECT_ID}
+      credentials:
+        location: ${GCP_CREDENTIALS_LOCATION}
+      storage:
+        enabled: true
+
+gcp:
+  storage:
+    bucket: ${GCP_STORAGE_BUCKET}
 jwt:
   secret: ${JWT_SECRET}

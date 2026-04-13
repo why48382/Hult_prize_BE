@@ -3,6 +3,9 @@ plugins {
     id 'org.springframework.boot' version '4.0.5'
     id 'io.spring.dependency-management' version '1.1.7'
 }
+ext {
+    springCloudGcpVersion = "8.0.1"
+}
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -28,6 +31,9 @@ dependencies {
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // GCP
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-storage:8.0.1'
+
     // lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -47,6 +53,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+}
+dependencyManagement {
+    imports {
+        mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:$springCloudGcpVersion"
+    }
 }
 
 tasks.named('test') {
