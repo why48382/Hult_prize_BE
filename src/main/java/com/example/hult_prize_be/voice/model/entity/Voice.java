@@ -1,5 +1,6 @@
 package com.example.hult_prize_be.voice.model.entity;
 
+import com.example.hult_prize_be.member.model.entity.Members;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,10 @@ public class Voice {
 
     private String originalText;
 
-    // GCS URL
+    // 음성파일 보관 URL
     private String audioUrl;
 
-    // 녹음 길이 (초)
+    // 녹음 길이
     private Integer audioDuration;
 
     @Enumerated(EnumType.STRING)
@@ -38,6 +39,10 @@ public class Voice {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "elder_id")
+    private Members elder;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoiceItems> items = new ArrayList<>();
@@ -54,6 +59,5 @@ public class Voice {
         DONE
         // 대기 중, 확인됨, 취소됨, 완료됨
     }
-
 
 }
