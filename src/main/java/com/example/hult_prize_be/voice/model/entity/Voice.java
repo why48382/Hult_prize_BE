@@ -44,7 +44,7 @@ public class Voice {
     @JoinColumn(name = "elder_id")
     private Members elder;
 
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "voice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoiceItems> items = new ArrayList<>();
 
     public enum UrgencyLevel {
