@@ -60,4 +60,9 @@ public class Voice {
         // 대기 중, 확인됨, 취소됨, 완료됨
     }
 
+    public void updateFromSTT(String originalText) {
+        this.originalText = originalText;
+        this.status = Status.CONFIRMED;
+    }
+
 }

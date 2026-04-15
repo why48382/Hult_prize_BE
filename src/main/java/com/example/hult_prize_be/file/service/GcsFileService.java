@@ -1,7 +1,7 @@
 package com.example.hult_prize_be.file.service;
 
 import com.example.hult_prize_be.config.GcsStorageProperties;
-import com.example.hult_prize_be.file.model.FileUploadResult;
+import com.example.hult_prize_be.file.model.FileDto;
 import com.example.hult_prize_be.utils.FileNameUtil;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
@@ -21,7 +21,7 @@ public class GcsFileService implements FileService {
     private final GcsStorageProperties gcsStorageProperties;
 
     @Override
-    public FileUploadResult upload(MultipartFile file, String directory) {
+    public FileDto.UploadResponse upload(MultipartFile file, String directory) {
         validate(file);
 
         String objectName = FileNameUtil.buildObjectName(directory, file.getOriginalFilename());
@@ -36,7 +36,7 @@ public class GcsFileService implements FileService {
             throw new UncheckedIOException("GCS 파일 업로드에 실패했습니다.", e);
         }
 
-        return new FileUploadResult(
+        return new FileDto.UploadResponse(
                 blob.getBucket(),
                 blob.getName(),
                 "https://storage.googleapis.com/" + blob.getBucket() + "/" + blob.getName(),

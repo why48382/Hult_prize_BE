@@ -1,6 +1,6 @@
 package com.example.hult_prize_be.file.controller;
 
-import com.example.hult_prize_be.file.model.FileUploadResult;
+import com.example.hult_prize_be.file.model.FileDto;
 import com.example.hult_prize_be.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<FileUploadResult> upload(@RequestPart("file") MultipartFile file, @RequestParam(defaultValue = "test") String directory) {
+    public ResponseEntity<FileDto.UploadResponse> upload(@RequestPart("file") MultipartFile file, @RequestParam(defaultValue = "test") String directory) {
         return ResponseEntity.ok(fileService.upload(file, directory));
     }
 }

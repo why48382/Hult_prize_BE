@@ -51,3 +51,6 @@ gcp:
     bucket: ${GCP_STORAGE_BUCKET}
 jwt:
   secret: ${JWT_SECRET}
+stt:
+  server:
+    url: ${STT_SERVER_URL}

@@ -1,8 +1,8 @@
 package com.example.hult_prize_be.file.service;
 
-import com.example.hult_prize_be.file.model.FileUploadResult;
+import com.example.hult_prize_be.file.model.FileDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
-    FileUploadResult upload(MultipartFile file, String directory);
+    FileDto.UploadResponse upload(MultipartFile file, String directory);
 }
