@@ -21,4 +21,14 @@ public class VoiceController {
         voiceService.upload(uploadReq, member);
         return ResponseEntity.ok("not yet implemented");
     }
+
+    @GetMapping("/requests")
+    public ResponseEntity<String> requests() {
+        return ResponseEntity.ok("not yet implemented");
+    }
+
+    @GetMapping("/{voiceId}")
+    public ResponseEntity<String> requestDetails() {
+        return ResponseEntity.ok("not yet implemented");
+    }
 }
