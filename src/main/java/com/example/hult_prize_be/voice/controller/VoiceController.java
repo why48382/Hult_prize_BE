@@ -2,6 +2,7 @@ package com.example.hult_prize_be.voice.controller;
 
 import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.voice.model.dto.VoiceDto;
+import com.example.hult_prize_be.voice.model.entity.Voice;
 import com.example.hult_prize_be.voice.service.VoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class VoiceController {
     @PatchMapping("/{voiceId}/status")
     public ResponseEntity<VoiceDto.RequestRes> updateStatus(
             @PathVariable Long voiceId,
-            @RequestBody VoiceDto.UpdateStatusReq updateStatusReq,
+            @RequestParam Voice.Status status,
             @AuthenticationPrincipal MemberDto.AuthUser member) {
-        return ResponseEntity.ok(voiceService.updateStatus(voiceId, updateStatusReq, member));
+        return ResponseEntity.ok(voiceService.updateStatus(voiceId, status, member));
     }
 
 }
