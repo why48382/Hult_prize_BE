@@ -44,8 +44,6 @@ public class VoiceService {
         CompletableFuture.runAsync(() -> processStt(savedVoice.getVoiceId(), savedVoice.getAudioUrl()));
     }
 
-
-    // TODO 테스트 해보기
     public List<VoiceDto.RequestRes> request(MemberDto.AuthUser member) {
         List<Long> elderIds = resolveElderIds(member);
         if (elderIds.isEmpty()) {
@@ -55,6 +53,16 @@ public class VoiceService {
         return voiceRepository.findByElder_IdInOrderByCreatedAtDesc(elderIds).stream()
                 .map(VoiceDto.RequestRes::from)
                 .toList();
+    }
+
+    public VoiceDto.RequestRes updateStatus(Long voiceId, Voice.Status status, MemberDto.AuthUser member) {
+        List<Long> elderIds = resolveElderIds(member);
+
+        Voice voice = voiceRepository.findByVoiceIdAndElder_IdIn(voiceId, elderIds)
+                .orElseThrow(() -> new RuntimeException("Voice not found or access denied."));
+
+        voice.changeStatus(status);
+        return VoiceDto.RequestRes.from(voiceRepository.save(voice));
     }
 
     private List<Long> resolveElderIds(MemberDto.AuthUser member) {
