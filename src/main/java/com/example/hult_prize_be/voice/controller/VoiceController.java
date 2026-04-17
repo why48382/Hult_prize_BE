@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/voice")
 @RequiredArgsConstructor
@@ -19,16 +21,13 @@ public class VoiceController {
             @ModelAttribute VoiceDto.UploadReq uploadReq,
             @AuthenticationPrincipal MemberDto.AuthUser member) {
         voiceService.upload(uploadReq, member);
-        return ResponseEntity.ok("not yet implemented");
+        return ResponseEntity.ok("업로드 완료");
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<String> requests() {
-        return ResponseEntity.ok("not yet implemented");
+    public ResponseEntity<List<VoiceDto.RequestRes>> requests(
+            @AuthenticationPrincipal MemberDto.AuthUser member) {
+        return ResponseEntity.ok(voiceService.getRequests(member));
     }
 
-    @GetMapping("/{voiceId}")
-    public ResponseEntity<String> requestDetails() {
-        return ResponseEntity.ok("not yet implemented");
-    }
 }
