@@ -27,7 +27,7 @@ public class VoiceController {
     @GetMapping("/requests")
     public ResponseEntity<List<VoiceDto.RequestRes>> requests(
             @AuthenticationPrincipal MemberDto.AuthUser member) {
-        return ResponseEntity.ok(voiceService.getRequests(member));
+        return ResponseEntity.ok(voiceService.request(member));
     }
 
 }

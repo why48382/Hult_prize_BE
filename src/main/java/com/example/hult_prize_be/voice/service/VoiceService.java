@@ -44,7 +44,8 @@ public class VoiceService {
         CompletableFuture.runAsync(() -> processStt(savedVoice.getVoiceId(), savedVoice.getAudioUrl()));
     }
 
-    public List<VoiceDto.RequestRes> getRequests(MemberDto.AuthUser member) {
+
+    public List<VoiceDto.RequestRes> request(MemberDto.AuthUser member) {
         List<Long> elderIds = resolveElderIds(member);
         if (elderIds.isEmpty()) {
             return List.of();
