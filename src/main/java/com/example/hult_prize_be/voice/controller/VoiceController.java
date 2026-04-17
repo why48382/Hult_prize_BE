@@ -30,4 +30,12 @@ public class VoiceController {
         return ResponseEntity.ok(voiceService.request(member));
     }
 
+    @PatchMapping("/{voiceId}/status")
+    public ResponseEntity<VoiceDto.RequestRes> updateStatus(
+            @PathVariable Long voiceId,
+            @RequestBody VoiceDto.UpdateStatusReq updateStatusReq,
+            @AuthenticationPrincipal MemberDto.AuthUser member) {
+        return ResponseEntity.ok(voiceService.updateStatus(voiceId, updateStatusReq, member));
+    }
+
 }
