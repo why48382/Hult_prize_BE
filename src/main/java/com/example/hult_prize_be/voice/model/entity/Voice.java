@@ -62,7 +62,27 @@ public class Voice {
 
     public void updateFromSTT(String originalText) {
         this.originalText = originalText;
-        this.status = Status.CONFIRMED;
+    }
+
+    public void changeStatus(Status targetStatus) {
+        validateStatusChange(targetStatus);
+        this.status = targetStatus;
+    }
+
+    public void validateStatusChange(Status targetStatus) {
+        if (targetStatus == null) {
+            throw new RuntimeException("Target status is required.");
+        }
+        if (this.status == targetStatus) {
+            return;
+        }
+        if ((this.status == Status.DONE || this.status == Status.CANCELED)
+                && (targetStatus == Status.PENDING || targetStatus == Status.CONFIRMED)) {
+            throw new RuntimeException("Cannot change DONE or CANCELED back to PENDING or CONFIRMED.");
+        }
+        if ((targetStatus == Status.DONE || targetStatus == Status.CANCELED) && this.status == Status.PENDING) {
+            throw new RuntimeException("Cannot change PENDING directly to DONE or CANCELED.");
+        }
     }
 
 }
