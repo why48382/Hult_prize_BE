@@ -1,17 +1,27 @@
 package com.example.hult_prize_be.shopping.controller;
 
+import com.example.hult_prize_be.shopping.model.dto.ShoppingDto;
+import com.example.hult_prize_be.shopping.service.ShoppingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/shopping")
 @RequiredArgsConstructor
 public class ShoppingController {
+    private final ShoppingService shoppingService;
 
-    // 두가지 방식의 요청이 가능해야 하지 않을까? 그냥 바로 키워드 받아서 상품 추천 받기
-    // 어시스턴트에게 도움을 받은뒤 결과를 받는 방법
-//    @GetMapping("/")
+    @GetMapping("/question/{voiceItemId}")
+    public ResponseEntity<ShoppingDto.QuestionsRes> getQuestions(
+            @PathVariable Long voiceItemId) {
+        return ResponseEntity.ok(shoppingService.getQuestions(voiceItemId));
+    }
 
+    @PostMapping("/recommend/{voiceItemId}")
+    public ResponseEntity<ShoppingDto.RecommendRes> recommend(
+            @PathVariable Long voiceItemId,
+            @RequestBody ShoppingDto.RecommendReq req) {
+        return ResponseEntity.ok(shoppingService.recommend(req, voiceItemId));
+    }
 }
