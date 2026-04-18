@@ -1,5 +1,6 @@
 package com.example.hult_prize_be.voice.model.entity;
 
+import com.example.hult_prize_be.shopping.model.entity.ShoppingRecommendation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,7 @@ public class VoiceItems {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voice_id", nullable = false)
     private Voice voice;
+
+    @OneToOne(mappedBy = "voiceItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ShoppingRecommendation recommendation;
 }
