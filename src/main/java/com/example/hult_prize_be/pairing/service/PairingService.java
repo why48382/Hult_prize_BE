@@ -33,11 +33,7 @@ public class PairingService {
             throw new RuntimeException("잘못된 역할입니다.");
         }
 
-        // TODO 코드 생성을 메소드로 빼고 불러오는 방식으로 변경하기
-        String code;
-        do {
-            code = String.format("%04d", new Random().nextInt(10000));
-        } while (codeStore.containsKey(code)); // 이미 존재하면 다시 생성
+        String code = generateUniqueCode();
         codeStore.put(code, new CodeEntry(member, Instant.now().plusSeconds(600)));
 
         return code;
@@ -55,4 +51,11 @@ public class PairingService {
         pairingRepository.save(pairing);
     }
 
+    private String generateUniqueCode() {
+        String code;
+        do {
+            code = String.format("%04d", new Random().nextInt(10000));
+        } while (codeStore.containsKey(code));
+        return code;
+    }
 }
