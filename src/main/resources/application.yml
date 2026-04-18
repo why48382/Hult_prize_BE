@@ -54,3 +54,7 @@ jwt:
 stt:
   server:
     url: ${STT_SERVER_URL}
+
+shopping:
+  server:
+    url: ${SHOPPING_SERVER_URL}
