@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ public class VoiceController {
     //TODO 테스트 x
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
-            @ModelAttribute VoiceDto.UploadReq uploadReq,
+            @RequestPart("file") MultipartFile file,
             @AuthenticationPrincipal MemberDto.AuthUser member) {
-        voiceService.upload(uploadReq, member);
+        voiceService.upload(file, "voice", member);  // directory 고정
         return ResponseEntity.ok("업로드 완료");
     }
 

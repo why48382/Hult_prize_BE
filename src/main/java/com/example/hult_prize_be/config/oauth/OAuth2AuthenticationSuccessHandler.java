@@ -25,7 +25,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("LoginFilter 성공 로직.");
         MemberDto.AuthUser authUser = (MemberDto.AuthUser) authentication.getPrincipal();
 
-        String jwt = jwtUtil.generateToken(authUser.getMemberId(), authUser.getId(), authUser.getName());
+        String jwt = jwtUtil.generateToken(authUser.getMemberId(), authUser.getId(), authUser.getName(), authUser.getRole());
 
         if (jwt != null) {
 //            String cookieValue = String.format(
@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             response.addHeader("Set-Cookie", cookieValue);
             // 소셜 로그인 성공 후 프론트의 특정 경로로 이동
 //            response.sendRedirect("https://www.gomorebi.kro.kr/oauth2/success");
-            response.sendRedirect("https://localhost:5173/oauth2/success");
+            response.sendRedirect("http://localhost:5173/oauth2/success");
         }
     }
 }

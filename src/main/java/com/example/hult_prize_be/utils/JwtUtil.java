@@ -1,5 +1,6 @@
 package com.example.hult_prize_be.utils;
 
+import com.example.hult_prize_be.member.model.entity.Members;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,7 +26,7 @@ public class JwtUtil {
         this.KEY = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String member_Id, Long id, String name) {
+    public String generateToken(String member_Id, Long id, String name, Members.Role role) {
 
         // Map로 제거하고 바로 적용시키는 방식으로 변경
         // 만약 데이터가 많다면 Map 방식이 좋을것 같다
@@ -33,6 +34,7 @@ public class JwtUtil {
                 .claim("id", id)
                 .claim("member_Id", member_Id)
                 .claim("name", name)
+                .claim("role", role != null ? role.name() : null)
                 .setExpiration(new Date(System.currentTimeMillis() + EXP))
                 .signWith(KEY, SignatureAlgorithm.HS256)
                 .compact();

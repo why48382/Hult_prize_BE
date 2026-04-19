@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-// 아이템의 상품 추천 정보를 저장하는 테이블 API 호출 횟수를 줄이기 위함
 public class ShoppingRecommendation {
 
     @Id

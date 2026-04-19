@@ -15,6 +15,26 @@ import java.util.List;
 public class VoiceDto {
 
     @Getter
+    @Builder
+    public static class CreateVoice {
+        public static Voice toEntity(FileDto.UploadResponse uploadedFile, MemberDto.AuthUser member) {
+            return Voice.builder()
+                    .audioUrl(uploadedFile.fileUrl())
+                    .urgencyLevel(Voice.UrgencyLevel.NORMAL)
+                    .status(Voice.Status.PENDING)
+                    .createdAt(LocalDateTime.now())
+                    .elder(Members.builder()
+                            .id(member.getId())
+                            .memberId(member.getMemberId())
+                            .name(member.getName())
+                            .role(member.getRole())
+                            .status(member.getStatus())
+                            .build())
+                    .build();
+        }
+    }
+
+    @Getter
     public static class UploadReq {
         private MultipartFile file;
         private String directory;

@@ -37,7 +37,6 @@ public class Voice {
     @Column(nullable = false)
     private Status status;
 
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

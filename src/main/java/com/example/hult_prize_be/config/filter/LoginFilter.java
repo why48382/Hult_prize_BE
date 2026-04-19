@@ -52,7 +52,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("LoginFilter 성공 로직.");
         MemberDto.AuthUser authUser = (MemberDto.AuthUser) authResult.getPrincipal();
 
-        String jwt = jwtUtil.generateToken(authUser.getName(), authUser.getId(), authUser.getName());
+        String jwt = jwtUtil.generateToken(authUser.getName(), authUser.getId(), authUser.getName(), authUser.getRole());
 
         if(jwt != null) {
             Cookie cookie = new Cookie("onsoom_access_token", jwt);

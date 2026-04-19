@@ -1,6 +1,7 @@
 package com.example.hult_prize_be.config.filter;
 
 import com.example.hult_prize_be.member.model.dto.MemberDto;
+import com.example.hult_prize_be.member.model.entity.Members;
 import com.example.hult_prize_be.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -42,50 +43,39 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 System.out.println(cookie.getName());
                 if (cookie.getName().equals("onsoom_access_token")) {
                     jwt = cookie.getValue();
-                    System.out.println(2);
                     break;
                 }
             }
         }
         // ✅ 2. Authorization 헤더에서 토큰 찾기 (쿠키 없을 때)
         if (jwt == null) {
-            System.out.println(3);
             String authHeader = request.getHeader("Authorization");
-            System.out.println(4);
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                System.out.println(5);
                 jwt = authHeader.substring(7); // "Bearer " 이후 토큰 부분
-                System.out.println(6);
             }
         }
 
         if (jwt != null) {
-            System.out.println(7);
             Claims claims = jwtUtil.getClaims(jwt);
-            System.out.println(8);
             if (claims != null) {
                 String memberId = JwtUtil.getValue(claims, "member_Id");
-                System.out.println(9);
                 Long id = ((Number) claims.get("id")).longValue();
-                System.out.println(10);
                 String name = JwtUtil.getValue(claims, "name");
-                System.out.println(11);
+                String roleStr = JwtUtil.getValue(claims, "role");
 
                 MemberDto.AuthUser authUser = MemberDto.AuthUser.builder()
                         .id(id)
                         .memberId(memberId)
                         .name(name)
+                        .role(roleStr != null ? Members.Role.valueOf(roleStr) : null)
                         .build();
-                System.out.println(12);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         authUser,
                         null,
                         List.of(new SimpleGrantedAuthority("ROLE_USER")) // 특정 권한 부여, 권한 앞에 ROLE_를 붙여야 함
                 );
-                System.out.println(13);
                 // 컨텍스트라는 공간에 인증된 사용자 정보 authentication를 저장
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println(14);
 
             }
         }

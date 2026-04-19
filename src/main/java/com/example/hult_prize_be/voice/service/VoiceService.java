@@ -16,6 +16,7 @@ import com.example.hult_prize_be.voice.repository.VoiceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -31,21 +32,24 @@ public class VoiceService {
     private final VoiceItemRepository voiceItemRepository;
     private final SttClient sttClient;
 
-    public void upload(VoiceDto.UploadReq uploadReq, MemberDto.AuthUser member) {
+    public void upload(MultipartFile file, String directory, MemberDto.AuthUser member) {
         Members members = memberRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        if (members.getRole() == Members.Role.ELDER) {
+        if (members.getRole() != Members.Role.ELDER) {
             throw new RuntimeException("요청할 수 있는 사용자가 아닙니다.");
         }
 
-        FileDto.UploadResponse uploadedFile = fileService.upload(uploadReq.getFile(), uploadReq.getDirectory());
-        Voice savedVoice = voiceRepository.save(uploadReq.toEntity(uploadedFile, member));
+        FileDto.UploadResponse uploadedFile = fileService.upload(file, directory);
+        Voice savedVoice = voiceRepository.save(VoiceDto.CreateVoice.toEntity(uploadedFile, member));
 
         CompletableFuture.runAsync(() -> processStt(savedVoice.getVoiceId(), savedVoice.getAudioUrl()));
     }
 
     public List<VoiceDto.RequestRes> request(MemberDto.AuthUser member) {
+        log.info("member id: {}, role: {}", member.getId(), member.getRole());
         List<Long> elderIds = resolveElderIds(member);
+        log.info("elderIds: {}", elderIds);
+
         if (elderIds.isEmpty()) {
             return List.of();
         }

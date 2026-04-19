@@ -2,10 +2,13 @@ package com.example.hult_prize_be.shopping.model.dto;
 
 import com.example.hult_prize_be.shopping.model.entity.ShoppingRecommendation;
 import com.example.hult_prize_be.voice.model.entity.VoiceItems;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -54,11 +57,14 @@ public class ShoppingDto {
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RecommendRes {
         private Long voiceItemId;
         private List<Recommendation> recommendations;
 
         @Getter
+        @AllArgsConstructor
         public static class Recommendation {
             String itemName;
             Integer rank;
@@ -68,6 +74,25 @@ public class ShoppingDto {
             String productUrl;
             String image;
             String reason;
+        }
+
+        public static RecommendRes from(ShoppingRecommendation entity) {
+            List<Recommendation> recommendations = new java.util.ArrayList<>();
+
+            if (entity.getProductTitle1() != null) {
+                recommendations.add(new Recommendation(entity.getProductTitle1(), 1, entity.getProductTitle1(), entity.getPrice1(), entity.getMall1(), entity.getProductUrl1(), entity.getImage1(), entity.getReason1()));
+            }
+            if (entity.getProductTitle2() != null) {
+                recommendations.add(new Recommendation(entity.getProductTitle2(), 2, entity.getProductTitle2(), entity.getPrice2(), entity.getMall2(), entity.getProductUrl2(), entity.getImage2(), entity.getReason2()));
+            }
+            if (entity.getProductTitle3() != null) {
+                recommendations.add(new Recommendation(entity.getProductTitle3(), 3, entity.getProductTitle3(), entity.getPrice3(), entity.getMall3(), entity.getProductUrl3(), entity.getImage3(), entity.getReason3()));
+            }
+
+            return RecommendRes.builder()
+                    .voiceItemId(entity.getVoiceItem().getVoiceItemId())
+                    .recommendations(recommendations)
+                    .build();
         }
 
         public ShoppingRecommendation toEntity(VoiceItems voiceItem) {

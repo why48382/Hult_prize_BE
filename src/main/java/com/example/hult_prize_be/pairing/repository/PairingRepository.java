@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface PairingRepository extends JpaRepository<Pairing, Long> {
     @Query("select p.elder.id from Pairing p where p.caregiver.id = :caregiverId")
+
     List<Long> findElderIdsByCaregiverId(@Param("caregiverId") Long caregiverId);
 }

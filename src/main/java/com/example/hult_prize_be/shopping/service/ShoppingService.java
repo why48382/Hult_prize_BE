@@ -30,6 +30,11 @@ public class ShoppingService {
         VoiceItems voiceItem = voiceItemRepository.findById(voiceItemId)
                 .orElseThrow(() -> new RuntimeException("VoiceItem not found"));
 
+        ShoppingRecommendation existing = shoppingRepository.findByVoiceItem_VoiceItemId(voiceItemId);
+        if (existing != null) {
+            return ShoppingDto.RecommendRes.from(existing);
+        }
+
         ShoppingDto.RecommendRes res = shoppingClient.recommend(req);
         shoppingRepository.save(res.toEntity(voiceItem));
         return res;
