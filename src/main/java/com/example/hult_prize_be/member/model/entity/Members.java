@@ -33,7 +33,7 @@ public class Members {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("ACTIVE")
+    @Column(columnDefinition = "VARCHAR(10) DEFAULT 'ACTIVE'")
     private Status status;
 
     private LocalDateTime createdAt;

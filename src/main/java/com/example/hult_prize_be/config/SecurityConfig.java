@@ -50,7 +50,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173", "http://192.0.2.108:80")
+                List.of("http://localhost:5173", "https://onsum.store")
         );
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

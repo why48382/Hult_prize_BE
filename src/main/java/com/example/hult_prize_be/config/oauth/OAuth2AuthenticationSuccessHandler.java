@@ -28,18 +28,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String jwt = jwtUtil.generateToken(authUser.getMemberId(), authUser.getId(), authUser.getName(), authUser.getRole());
 
         if (jwt != null) {
-//            String cookieValue = String.format(
-//                    "onsoom_access_token=%s; Path=/; Domain=gomorebi.kro.kr; HttpOnly; Secure; SameSite=None; Max-Age=%d",
-//                    jwt, 60 * 60 * 24
-//            );
             String cookieValue = String.format(
-                    "onsoom_access_token=%s; Path=/; HttpOnly; Max-Age=%d",
+                    "onsoom_access_token=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d",
                     jwt, 60 * 60 * 24
             );
             response.addHeader("Set-Cookie", cookieValue);
-            // 소셜 로그인 성공 후 프론트의 특정 경로로 이동
-//            response.sendRedirect("https://www.gomorebi.kro.kr/oauth2/success");
-            response.sendRedirect("http://localhost:5173/oauth2/success");
+            response.sendRedirect("https://onsum.store/oauth2/success");
         }
     }
 }
