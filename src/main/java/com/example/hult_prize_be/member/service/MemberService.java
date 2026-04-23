@@ -18,9 +18,9 @@ public class MemberService {
     public void decideRole(String memberId, Members.Role role) {
         Members member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
-        if (member.getRole() != null && member.getRole() != role) {
-            throw new RuntimeException("역할을 먼저 제거해야 합니다.");
-        }
+//        if (member.getRole() != null && member.getRole() != role) {
+//            throw new RuntimeException("역할을 먼저 제거해야 합니다.");
+//        }
         member.decideRole(role);
     }
 }
