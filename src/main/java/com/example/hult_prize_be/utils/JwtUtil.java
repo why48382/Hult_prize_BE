@@ -19,7 +19,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
     private Key KEY;
-    private static final Long EXP = 1000 * 60 * 240L;
+    private static final Long EXP = 1000 * 60 * 60 * 24 * 7L;
 
     @PostConstruct
     public void init() {
@@ -35,6 +35,16 @@ public class JwtUtil {
                 .claim("member_Id", member_Id)
                 .claim("name", name)
                 .claim("role", role != null ? role.name() : null)
+                .setExpiration(new Date(System.currentTimeMillis() + EXP))
+                .signWith(KEY, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateNewMemberToken(String kakaoId, String name) {
+        return Jwts.builder()
+                .claim("member_Id", kakaoId)
+                .claim("name", name)
+                .claim("isNew", true)
                 .setExpiration(new Date(System.currentTimeMillis() + EXP))
                 .signWith(KEY, SignatureAlgorithm.HS256)
                 .compact();

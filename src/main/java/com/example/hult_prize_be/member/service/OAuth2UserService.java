@@ -24,22 +24,21 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
         Map properties = ((Map) attributes.get("properties"));
         String name = (String) properties.get("nickname");
         String kakaoId = attributes.get("id").toString();
 
-        Optional<Members> socialUserResult =
-                memberRepository.findByMemberId(kakaoId);
-        Members member;
-        if (!socialUserResult.isPresent()) {
-            member = memberRepository.save(
-                    Members.builder().name(name).memberId(kakaoId).password("KAKAO_USER")
-                            .build()
-            );
-        } else {
-            member = socialUserResult.get();
+        Optional<Members> socialUserResult = memberRepository.findByMemberId(kakaoId);
+
+        if (socialUserResult.isEmpty()) {
+            // 신규 유저 - DB 저장 없이 isNew=true로 반환
+            return MemberDto.AuthUser.builder()
+                    .memberId(kakaoId)
+                    .name(name)
+                    .newMember(true)
+                    .build();
         }
-        return MemberDto.AuthUser.fromOAuth(member);
+
+        return MemberDto.AuthUser.fromOAuth(socialUserResult.get());
     }
 }

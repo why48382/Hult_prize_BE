@@ -6,10 +6,7 @@ import com.example.hult_prize_be.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/member")
@@ -18,9 +15,21 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/role")
-    public ResponseEntity decideRole(@AuthenticationPrincipal MemberDto.AuthUser member,
-                                     @RequestParam Members.Role role) {
+    public ResponseEntity<String> decideRole(@AuthenticationPrincipal MemberDto.AuthUser member,
+                                             @RequestParam Members.Role role) {
         memberService.decideRole(member.getMemberId(), role);
+        return ResponseEntity.ok("역할 변경 완료");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberDto.MeRes> getMe(@AuthenticationPrincipal MemberDto.AuthUser member) {
+        return ResponseEntity.ok(memberService.getMe(member));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@AuthenticationPrincipal MemberDto.AuthUser authUser,
+                                       @RequestBody MemberDto.SignupReq req) {
+        memberService.signup(authUser, req);
         return ResponseEntity.ok().build();
     }
 }

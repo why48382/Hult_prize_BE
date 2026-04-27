@@ -38,6 +38,18 @@ public class Members {
 
     private LocalDateTime createdAt;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean termsAgreed;       // [필수] 서비스 이용약관
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean voiceAgreed;       // [필수] 음성 정보 수집/이용 동의
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean privacyAgreed;     // [필수] 개인정보 수집/이용 동의
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean notificationAgreed; // [선택] 알림 정보 수신 동의
+
     public enum Role {
         ELDER,
         CAREGIVER,

@@ -40,6 +40,7 @@ public class MemberDto {
         private String name;
         private Members.Role role;
         private Members.Status status;
+        private boolean newMember;
 
         @Override
         public String getName() {
@@ -78,6 +79,7 @@ public class MemberDto {
                     .role(entity.getRole())
                     .status(entity.getStatus())
                     .password(null)
+                    .newMember(false)
                     .build();
         }
     }
@@ -113,4 +115,38 @@ public class MemberDto {
         private Members.Role role;
     }
 
+    @Getter
+    @Builder
+    public static class SignupReq {
+        private boolean termsAgreed;
+        private boolean voiceAgreed;
+        private boolean privacyAgreed;
+        private boolean notificationAgreed;
+
+        public Members toEntity(String kakaoId, String name) {
+            return Members.builder()
+                    .memberId(kakaoId)
+                    .name(name)
+                    .password("KAKAO_USER")
+                    .termsAgreed(this.termsAgreed)
+                    .voiceAgreed(this.voiceAgreed)
+                    .privacyAgreed(this.privacyAgreed)
+                    .notificationAgreed(this.notificationAgreed)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class MeRes {
+        private Members.Role role;
+        private boolean paired;
+
+        public static MeRes of(Members.Role role, boolean paired) {
+            return MeRes.builder()
+                    .role(role)
+                    .paired(paired)
+                    .build();
+        }
+    }
 }

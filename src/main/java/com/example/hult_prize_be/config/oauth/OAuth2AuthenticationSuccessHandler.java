@@ -25,15 +25,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("LoginFilter 성공 로직.");
         MemberDto.AuthUser authUser = (MemberDto.AuthUser) authentication.getPrincipal();
 
-        String jwt = jwtUtil.generateToken(authUser.getMemberId(), authUser.getId(), authUser.getName(), authUser.getRole());
+        String jwt = authUser.isNewMember()
+                ? jwtUtil.generateNewMemberToken(authUser.getMemberId(), authUser.getName())
+                : jwtUtil.generateToken(authUser.getMemberId(), authUser.getId(), authUser.getName(), authUser.getRole());
 
-        if (jwt != null) {
-            String cookieValue = String.format(
-                    "onsoom_access_token=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d",
-                    jwt, 60 * 60 * 24
-            );
-            response.addHeader("Set-Cookie", cookieValue);
-            response.sendRedirect("https://onsum.store/oauth2/success");
-        }
+        String cookieValue = String.format(
+                "onsoom_access_token=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d",
+                jwt, 60 * 60 * 24 * 7
+        );
+        response.addHeader("Set-Cookie", cookieValue);
+
+        String redirectUrl = authUser.isNewMember()
+                ? "https://onsum.store/oauth2/success?isNew=true"
+                : "https://onsum.store/oauth2/success";
+        response.sendRedirect(redirectUrl);
     }
 }

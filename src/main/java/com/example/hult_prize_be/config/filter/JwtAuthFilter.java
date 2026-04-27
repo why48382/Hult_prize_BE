@@ -40,7 +40,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String jwt = null;
         if (cookies != null) {
             for (Cookie cookie : request.getCookies()) {
-                System.out.println(cookie.getName());
                 if (cookie.getName().equals("onsoom_access_token")) {
                     jwt = cookie.getValue();
                     break;
@@ -62,13 +61,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Long id = ((Number) claims.get("id")).longValue();
                 String name = JwtUtil.getValue(claims, "name");
                 String roleStr = JwtUtil.getValue(claims, "role");
+                Boolean isNew = (Boolean) claims.get("isNew");
 
                 MemberDto.AuthUser authUser = MemberDto.AuthUser.builder()
                         .id(id)
                         .memberId(memberId)
                         .name(name)
                         .role(roleStr != null ? Members.Role.valueOf(roleStr) : null)
+                        .newMember(Boolean.TRUE.equals(isNew))
                         .build();
+
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         authUser,
                         null,
