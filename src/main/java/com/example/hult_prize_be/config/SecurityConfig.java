@@ -24,6 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -71,6 +73,14 @@ public class SecurityConfig {
             );
             config.successHandler(oAuth2AuthenticationSuccessHandler);
         });
+
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"message\": \"로그인 시간이 만료되었습니다.\"}");
+                })
+        );
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(
