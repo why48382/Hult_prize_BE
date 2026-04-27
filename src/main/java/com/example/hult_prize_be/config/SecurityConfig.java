@@ -54,7 +54,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of("http://localhost:5173", "https://onsum.store")
         );
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 적용
