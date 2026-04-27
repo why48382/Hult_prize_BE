@@ -40,7 +40,8 @@ public class Members {
 
     public enum Role {
         ELDER,
-        CAREGIVER
+        CAREGIVER,
+        NONE
     }
 
     public enum Status {
