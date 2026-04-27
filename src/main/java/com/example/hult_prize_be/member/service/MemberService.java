@@ -4,15 +4,16 @@ import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.member.model.entity.Members;
 import com.example.hult_prize_be.member.repository.MemberRepository;
 import com.example.hult_prize_be.pairing.repository.PairingRepository;
+import com.example.hult_prize_be.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
     private final PairingRepository pairingRepository;
 
@@ -40,10 +41,17 @@ public class MemberService {
     }
 
     @Transactional
-    public void signup(MemberDto.AuthUser authUser, MemberDto.SignupReq req) {
+    public void signup(MemberDto.AuthUser authUser, MemberDto.SignupReq req, HttpServletResponse response) {
         if (!authUser.isNewMember()) {
             throw new RuntimeException("이미 가입된 회원입니다.");
         }
-        memberRepository.save(req.toEntity(authUser.getMemberId(), authUser.getPassword()));
+        Members member = memberRepository.save(req.toEntity(authUser.getMemberId(), authUser.getName()));
+
+        String jwt = jwtUtil.generateToken(member.getMemberId(), member.getId(), member.getName(), member.getRole());
+        String cookieValue = String.format(
+                "onsoom_access_token=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=%d",
+                jwt, 60 * 60 * 24 * 7
+        );
+        response.addHeader("Set-Cookie", cookieValue);
     }
 }

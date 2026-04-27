@@ -3,6 +3,7 @@ package com.example.hult_prize_be.member.controller;
 import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.member.model.entity.Members;
 import com.example.hult_prize_be.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,8 +29,9 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@AuthenticationPrincipal MemberDto.AuthUser authUser,
-                                       @RequestBody MemberDto.SignupReq req) {
-        memberService.signup(authUser, req);
+                                       @RequestBody MemberDto.SignupReq req,
+                                       HttpServletResponse response) {
+        memberService.signup(authUser, req, response);
         return ResponseEntity.ok().build();
     }
 }
