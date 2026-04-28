@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class ShoppingController {
     private final ShoppingService shoppingService;
 
-    // Todo
     @GetMapping("/question/{voiceItemId}")
     public ResponseEntity<ShoppingDto.QuestionsRes> getQuestions(
             @PathVariable Long voiceItemId) {
         return ResponseEntity.ok(shoppingService.getQuestions(voiceItemId));
     }
 
-    // Todo
     @PostMapping("/recommend/{voiceItemId}")
     public ResponseEntity<ShoppingDto.RecommendRes> recommend(
             @PathVariable Long voiceItemId,

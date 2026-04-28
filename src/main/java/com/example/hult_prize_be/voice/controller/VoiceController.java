@@ -18,7 +18,6 @@ import java.util.List;
 public class VoiceController {
     private final VoiceService voiceService;
 
-    //TODO 테스트 x
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
             @RequestPart("file") MultipartFile file,
@@ -27,14 +26,12 @@ public class VoiceController {
         return ResponseEntity.ok("업로드 완료");
     }
 
-    //TODO 테스트 x
     @GetMapping("/requests")
     public ResponseEntity<List<VoiceDto.RequestRes>> requests(
             @AuthenticationPrincipal MemberDto.AuthUser member) {
         return ResponseEntity.ok(voiceService.request(member));
     }
 
-    //TODO 테스트 x
     @PatchMapping("/{voiceId}/status")
     public ResponseEntity<VoiceDto.RequestRes> updateStatus(
             @PathVariable Long voiceId,
