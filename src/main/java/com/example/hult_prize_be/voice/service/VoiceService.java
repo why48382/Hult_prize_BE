@@ -13,6 +13,7 @@ import com.example.hult_prize_be.voice.model.entity.Voice;
 import com.example.hult_prize_be.voice.model.entity.VoiceItems;
 import com.example.hult_prize_be.voice.repository.VoiceItemRepository;
 import com.example.hult_prize_be.voice.repository.VoiceRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,18 @@ public class VoiceService {
             return pairingRepository.findElderIdsByCaregiverId(member.getId());
         }
         return List.of();
+    }
+
+    @Transactional
+    public void delete(Long voiceId, MemberDto.AuthUser authUser) {
+        Voice voice = voiceRepository.findByVoiceIdAndElder_Id(voiceId, authUser.getId())
+                .orElseThrow(() -> new RuntimeException("Voice not found or access denied."));
+
+        if (voice.getStatus() == Voice.Status.DONE || voice.getStatus() == Voice.Status.CANCELED) {
+            throw new RuntimeException("완료되거나 취소된 요청은 삭제할 수 없습니다.");
+        }
+
+        voiceRepository.delete(voice);
     }
 
     private VoiceDto.RequestRes processStt(Long voiceId, String audioUrl) {

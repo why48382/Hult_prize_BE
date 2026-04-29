@@ -13,4 +13,6 @@ public interface VoiceRepository extends JpaRepository<Voice, Long> {
 
     @EntityGraph(attributePaths = "items")
     Optional<Voice> findByVoiceIdAndElder_IdIn(Long voiceId, List<Long> elderIds);
+
+    Optional<Voice> findByVoiceIdAndElder_Id(Long voiceId, Long id);
 }

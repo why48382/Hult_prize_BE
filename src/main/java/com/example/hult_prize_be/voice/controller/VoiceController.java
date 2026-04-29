@@ -39,4 +39,11 @@ public class VoiceController {
         return ResponseEntity.ok(voiceService.updateStatus(voiceId, status, member));
     }
 
+    @DeleteMapping("/{voiceId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long voiceId,
+            @AuthenticationPrincipal MemberDto.AuthUser member) {
+        voiceService.delete(voiceId, member);
+        return ResponseEntity.ok().build();
+    }
 }
