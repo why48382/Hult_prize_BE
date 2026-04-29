@@ -64,4 +64,8 @@ public class Members {
     public void decideRole(Role role) {
         if (role != null) this.role = role;
     }
+
+    public void unpair () {
+        this.role = Role.NONE;
+    }
 }

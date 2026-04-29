@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,6 +33,17 @@ public class MemberController {
                                        @RequestBody MemberDto.SignupReq req,
                                        HttpServletResponse response) {
         memberService.signup(authUser, req, response);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal MemberDto.AuthUser member,
+                                       HttpServletResponse response) {
+        response.addHeader(
+                "Set-Cookie",
+                "onsoom_access_token=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0"
+        );
+        SecurityContextHolder.clearContext();
         return ResponseEntity.ok().build();
     }
 }

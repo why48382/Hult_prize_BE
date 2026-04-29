@@ -5,10 +5,7 @@ import com.example.hult_prize_be.pairing.service.PairingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pairing")
@@ -28,6 +25,12 @@ public class PairingController {
     @GetMapping("/codeverify")
     public ResponseEntity codeVerification(@AuthenticationPrincipal MemberDto.AuthUser member, @RequestParam String code) {
         pairingService.codeVerify(member, code);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/disconnect")
+    public ResponseEntity disconnect(@AuthenticationPrincipal MemberDto.AuthUser member) {
+        // TODO
         return ResponseEntity.ok().build();
     }
 }
