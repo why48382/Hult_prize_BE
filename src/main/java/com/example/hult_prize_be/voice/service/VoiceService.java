@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -32,7 +31,7 @@ public class VoiceService {
     private final VoiceItemRepository voiceItemRepository;
     private final SttClient sttClient;
 
-    public void upload(MultipartFile file, String directory, MemberDto.AuthUser member) {
+    public VoiceDto.RequestRes upload(MultipartFile file, String directory, MemberDto.AuthUser member) {
         Members members = memberRepository.findByMemberId(member.getMemberId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         if (members.getRole() != Members.Role.ELDER) {
@@ -42,13 +41,11 @@ public class VoiceService {
         FileDto.UploadResponse uploadedFile = fileService.upload(file, directory);
         Voice savedVoice = voiceRepository.save(VoiceDto.CreateVoice.toEntity(uploadedFile, member));
 
-        CompletableFuture.runAsync(() -> processStt(savedVoice.getVoiceId(), savedVoice.getAudioUrl()));
+        return processStt(savedVoice.getVoiceId(), savedVoice.getAudioUrl());
     }
 
     public List<VoiceDto.RequestRes> request(MemberDto.AuthUser member) {
-        log.info("member id: {}, role: {}", member.getId(), member.getRole());
         List<Long> elderIds = resolveElderIds(member);
-        log.info("elderIds: {}", elderIds);
 
         if (elderIds.isEmpty()) {
             return List.of();
@@ -79,7 +76,7 @@ public class VoiceService {
         return List.of();
     }
 
-    private void processStt(Long voiceId, String audioUrl) {
+    private VoiceDto.RequestRes processStt(Long voiceId, String audioUrl) {
         int maxAttempts = 3;
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -87,7 +84,7 @@ public class VoiceService {
                 SttDto.Response response = sttClient.transcribe(new SttDto.Request(audioUrl, voiceId));
                 if (response == null) {
                     log.warn("STT response is null. voiceId={}, attempt={}/{}", voiceId, attempt, maxAttempts);
-                    return;
+                    throw new RuntimeException("STT 응답이 없습니다.");
                 }
 
                 Voice voice = voiceRepository.findById(voiceId)
@@ -105,14 +102,16 @@ public class VoiceService {
                 if (!items.isEmpty()) {
                     voiceItemRepository.saveAll(items);
                 }
-                return;
+
+                return VoiceDto.RequestRes.from(voice);
             } catch (Exception e) {
                 if (attempt == maxAttempts) {
                     log.error("Failed to process STT after {} attempts. voiceId={}", maxAttempts, voiceId, e);
-                    return;
+                    throw new RuntimeException("STT 처리에 실패했습니다.");
                 }
                 log.warn("Failed to process STT. Retrying... voiceId={}, attempt={}/{}", voiceId, attempt, maxAttempts, e);
             }
         }
+        throw new RuntimeException("STT 처리에 실패했습니다.");
     }
 }

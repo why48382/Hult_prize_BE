@@ -19,11 +19,10 @@ public class VoiceController {
     private final VoiceService voiceService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(
+    public ResponseEntity<VoiceDto.RequestRes> upload(
             @RequestPart("file") MultipartFile file,
             @AuthenticationPrincipal MemberDto.AuthUser member) {
-        voiceService.upload(file, "voice", member);  // directory 고정
-        return ResponseEntity.ok("업로드 완료");
+        return ResponseEntity.ok(voiceService.upload(file, "voice", member));
     }
 
     @GetMapping("/requests")
