@@ -13,4 +13,6 @@ public interface PairingRepository extends JpaRepository<Pairing, Long> {
 
     boolean existsByElder_Id(Long elderId);
     boolean existsByCaregiver_Id(Long caregiverId);
+    void deleteByElder_Id(Long elderId);
+    void deleteByCaregiver_Id(Long caregiverId);
 }

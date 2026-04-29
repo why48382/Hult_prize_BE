@@ -6,6 +6,7 @@ import com.example.hult_prize_be.member.repository.MemberRepository;
 import com.example.hult_prize_be.pairing.model.dto.PairingDto;
 import com.example.hult_prize_be.pairing.model.entity.Pairing;
 import com.example.hult_prize_be.pairing.repository.PairingRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,22 @@ public class PairingService {
         PairingDto.CreatReq creatReq = new PairingDto.CreatReq();
         Pairing pairing = creatReq.toEntity(entry.elderId, caregiver);
         pairingRepository.save(pairing);
+    }
+
+    @Transactional
+    public void unpair(MemberDto.AuthUser authUser) {
+        Members member = memberRepository.findByMemberId(authUser.getMemberId())
+                .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
+
+        if (member.getRole() == Members.Role.ELDER) {
+            pairingRepository.deleteByElder_Id(member.getId());
+        } else if (member.getRole() == Members.Role.CAREGIVER) {
+            pairingRepository.deleteByCaregiver_Id(member.getId());
+        } else {
+            throw new RuntimeException("페어링된 사용자가 아닙니다.");
+        }
+
+        member.unpair();
     }
 
     private String generateUniqueCode() {

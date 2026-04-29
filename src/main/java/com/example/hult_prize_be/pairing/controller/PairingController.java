@@ -2,9 +2,11 @@ package com.example.hult_prize_be.pairing.controller;
 
 import com.example.hult_prize_be.member.model.dto.MemberDto;
 import com.example.hult_prize_be.pairing.service.PairingService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,6 +22,7 @@ public class PairingController {
     public ResponseEntity<String> codeIssue(@AuthenticationPrincipal MemberDto.AuthUser member) {
         return ResponseEntity.ok(pairingService.codeIssue(member));
     }
+
     // 보호자의 페어링 코드 검증 요청
     // 대상의 id를 어떻게 휙득하지? 반대로 이렇게 해야 할듯 코드 입력 -> 아이디를 알아내기
     @GetMapping("/codeverify")
@@ -28,9 +31,9 @@ public class PairingController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/disconnect")
-    public ResponseEntity disconnect(@AuthenticationPrincipal MemberDto.AuthUser member) {
-        // TODO
+    @DeleteMapping("/unpair")
+    public ResponseEntity<Void> unpair(@AuthenticationPrincipal MemberDto.AuthUser member) {
+        pairingService.unpair(member);
         return ResponseEntity.ok().build();
     }
 }
