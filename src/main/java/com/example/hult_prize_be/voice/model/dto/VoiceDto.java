@@ -15,7 +15,6 @@ import java.util.List;
 public class VoiceDto {
 
     @Getter
-    @Builder
     public static class CreateVoice {
         public static Voice toEntity(FileDto.UploadResponse uploadedFile, MemberDto.AuthUser member) {
             return Voice.builder()

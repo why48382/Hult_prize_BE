@@ -87,7 +87,6 @@ public class MemberDto {
     }
 
     @Getter
-    @Builder
     public static class Login {
         private String memberId;
         private String password;
@@ -112,7 +111,6 @@ public class MemberDto {
     }
 
     @Getter
-    @Builder
     public static class RoleReq {
         private Members.Role role;
     }
