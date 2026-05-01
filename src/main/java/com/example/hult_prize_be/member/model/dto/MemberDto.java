@@ -2,8 +2,10 @@ package com.example.hult_prize_be.member.model.dto;
 
 import com.example.hult_prize_be.member.model.entity.Members;
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -117,6 +119,8 @@ public class MemberDto {
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SignupReq {
         private boolean termsAgreed;
         private boolean voiceAgreed;
