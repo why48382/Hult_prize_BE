@@ -112,11 +112,11 @@ public class VoiceService {
                           .map(item -> item.toEntity(voice))
                           .toList();
 
-                if (!items.isEmpty()) {
-                    voiceItemRepository.saveAll(items);
-                }
+                List<VoiceItems> savedItems = items.isEmpty()
+                        ? List.of()
+                        : voiceItemRepository.saveAll(items);
 
-                return VoiceDto.RequestRes.from(voice);
+                return VoiceDto.RequestRes.from(voice, savedItems);
             } catch (Exception e) {
                 if (attempt == maxAttempts) {
                     log.error("Failed to process STT after {} attempts. voiceId={}", maxAttempts, voiceId, e);

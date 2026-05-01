@@ -82,6 +82,18 @@ public class VoiceDto {
                             .toList())
                     .build();
         }
+
+        public static RequestRes from(Voice voice, List<VoiceItems> items) {
+            return RequestRes.builder()
+                    .voiceId(voice.getVoiceId())
+                    .originalText(voice.getOriginalText())
+                    .audioUrl(voice.getAudioUrl())
+                    .urgencyLevel(voice.getUrgencyLevel())
+                    .status(voice.getStatus())
+                    .createdAt(voice.getCreatedAt())
+                    .items(items.stream().map(ItemRes::from).toList())
+                    .build();
+        }
     }
 
     @Getter
