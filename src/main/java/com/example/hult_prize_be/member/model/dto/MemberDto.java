@@ -118,9 +118,6 @@ public class MemberDto {
     }
 
     @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class SignupReq {
         private boolean termsAgreed;
         private boolean voiceAgreed;
