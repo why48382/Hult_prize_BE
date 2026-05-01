@@ -28,13 +28,16 @@ public class MemberService {
     }
 
     public MemberDto.MeRes getMe(MemberDto.AuthUser authUser) {
-        Members.Role role = authUser.getRole();
+        Members member = memberRepository.findByMemberId(authUser.getMemberId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+
+        Members.Role role = member.getRole();
         boolean paired = false;
 
         if (role == Members.Role.ELDER) {
-            paired = pairingRepository.existsByElder_Id(authUser.getId());
+            paired = pairingRepository.existsByElder_Id(member.getId());
         } else if (role == Members.Role.CAREGIVER) {
-            paired = pairingRepository.existsByCaregiver_Id(authUser.getId());
+            paired = pairingRepository.existsByCaregiver_Id(member.getId());
         }
 
         return MemberDto.MeRes.of(role, paired);
