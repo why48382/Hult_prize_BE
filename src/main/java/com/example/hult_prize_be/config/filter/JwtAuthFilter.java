@@ -58,7 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.getClaims(jwt);
             if (claims != null) {
                 String memberId = JwtUtil.getValue(claims, "member_Id");
-                Long id = ((Number) claims.get("id")).longValue();
+                Long id = claims.get("id") != null ? ((Number) claims.get("id")).longValue() : null;
                 String name = JwtUtil.getValue(claims, "name");
                 String roleStr = JwtUtil.getValue(claims, "role");
                 Boolean isNew = (Boolean) claims.get("isNew");
