@@ -58,3 +58,6 @@ stt:
 shopping:
   server:
     url: ${SHOPPING_SERVER_URL}
+
+server:
+  forward-headers-strategy: framework
