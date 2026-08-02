@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -55,8 +56,21 @@ public class Voice {
         PENDING,
         CONFIRMED,
         CANCELED,
-        DONE
+        DONE;
         // 대기 중, 확인됨, 취소됨, 완료됨
+
+        private Set<Status> allowedNext;
+
+        static {
+            PENDING.allowedNext = Set.of(CONFIRMED);
+            CONFIRMED.allowedNext = Set.of(CANCELED, DONE);
+            CANCELED.allowedNext = Set.of();
+            DONE.allowedNext = Set.of();
+        }
+
+        public boolean canTransitionTo(Status target) {
+            return allowedNext.contains(target);
+        }
     }
 
     public void updateFromSTT(String originalText) {
@@ -75,13 +89,11 @@ public class Voice {
         if (this.status == targetStatus) {
             return;
         }
-        if ((this.status == Status.DONE || this.status == Status.CANCELED)
-                && (targetStatus == Status.PENDING || targetStatus == Status.CONFIRMED)) {
-            throw new RuntimeException("Cannot change DONE or CANCELED back to PENDING or CONFIRMED.");
-        }
-        if ((targetStatus == Status.DONE || targetStatus == Status.CANCELED) && this.status == Status.PENDING) {
-            throw new RuntimeException("Cannot change PENDING directly to DONE or CANCELED.");
+        if (!this.status.canTransitionTo(targetStatus)) {
+            throw new RuntimeException(
+                    "Cannot change status from " + this.status + " to " + targetStatus + ".");
         }
     }
+
 
 }
