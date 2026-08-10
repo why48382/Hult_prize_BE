@@ -56,7 +56,6 @@ public class JwtUtil {
         cookie.setHttpOnly(true);
         cookie.setSecure(true); // 로그인 때 Secure 줬다면 동일하게
         cookie.setPath("/");
-//        cookie.setDomain("gomorebi.kro.kr"); // 로그인 때와 동일하게
         cookie.setMaxAge(0); // 즉시 만료
         response.addCookie(cookie);
 
